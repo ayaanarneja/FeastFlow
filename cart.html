@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Cart | FeastFlow</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+<header class="navbar">
+  <div class="container">
+    <a href="index.html" class="logo">🍽️ Feast<span>Flow</span></a>
+    <button class="nav-toggle btn-icon" id="navToggle" aria-label="Toggle menu">☰</button>
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="restaurants.html">Restaurants</a>
+      <a href="cart.html" class="active">Orders</a>
+    </nav>
+    <div class="nav-search">
+      <span class="icon">🔎</span>
+      <input type="text" id="navSearchInput" placeholder="Search restaurants or cuisines...">
+    </div>
+    <div class="nav-actions">
+      <button class="btn-icon theme-toggle" aria-label="Toggle dark mode">🌙</button>
+      <button class="btn-icon cart-btn" id="cartOpenBtn" aria-label="Open cart">
+        🛒
+        <span class="cart-count">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="container section">
+
+  <!-- ===== Cart view ===== -->
+  <div id="cartView">
+    <div class="section-head">
+      <div>
+        <h2>Your Cart</h2>
+        <p>Review your items before checking out.</p>
+      </div>
+    </div>
+
+    <div id="cartPageEmpty" hidden>
+      <div class="empty-cart">
+        <div class="emoji">🛒</div>
+        <h3>Your cart is empty</h3>
+        <p>Looks like you haven't added anything yet.</p>
+        <a href="restaurants.html" class="btn btn-primary" style="margin-top:16px;">Browse Restaurants</a>
+      </div>
+    </div>
+
+    <div class="cart-page-grid" id="cartPageGrid" hidden>
+      <div class="cart-page-list" id="cartPageList"></div>
+
+      <div class="summary-card">
+        <h3>Order Summary</h3>
+        <div class="promo-input">
+          <input type="text" placeholder="Enter promo code (e.g. FEAST50)">
+          <button class="btn btn-outline">Apply</button>
+        </div>
+        <div id="summaryRows"></div>
+        <button class="btn btn-primary btn-block" style="margin-top:18px;" id="checkoutBtn">Proceed to Checkout</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Order success view ===== -->
+  <div id="successView" hidden>
+    <div class="success-box">
+      <div class="success-icon">✓</div>
+      <h2>Order placed successfully!</h2>
+      <p style="color:var(--color-muted); margin:12px 0 8px;">Your order <strong id="orderIdText"></strong> is being prepared and will arrive soon.</p>
+      <p style="color:var(--color-muted); margin-bottom:24px;">This is a UI-only demo checkout — no real payment was made.</p>
+      <a href="restaurants.html" class="btn btn-primary">Order Something Else</a>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="container footer-grid">
+    <div class="footer-col">
+      <div class="footer-logo">🍽️ FeastFlow</div>
+      <p>Your favourite food, delivered fast, fresh and hot — right to your door.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="#">About Us</a>
+      <a href="#">Careers</a>
+      <a href="#">Blog</a>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <a href="#">Help Centre</a>
+      <a href="#">Partner with Us</a>
+      <a href="#">Ride with Us</a>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <a href="#">support@feastflow.example</a>
+      <a href="#">+91 98765 43210</a>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2026 FeastFlow. All rights reserved. Built as a frontend demo project.</div>
+</footer>
+
+<div class="cart-overlay" id="cartOverlay"></div>
+<aside class="cart-drawer" id="cartDrawer">
+  <div class="cart-drawer-header">
+    <h3>Your Cart</h3>
+    <button class="btn-icon" id="cartCloseBtn" aria-label="Close cart">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-drawer-footer" id="cartDrawerFooter"></div>
+</aside>
+
+<script src="js/data.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/app.js"></script>
+<script src="js/search.js"></script>
+<script>
+  function cartLineItemHTML(item) {
+    return `
+      <div class="cart-item">
+        <div class="emoji">${item.emoji}</div>
+        <div class="info">
+          <h5>${item.name}</h5>
+          <div class="unit-price">₹${item.price} each</div>
+        </div>
+        <div class="qty-stepper">
+          <button aria-label="Decrease quantity" onclick="decreaseQty(${item.id}); renderCartPage();">−</button>
+          <span>${item.quantity}</span>
+          <button aria-label="Increase quantity" onclick="increaseQty(${item.id}); renderCartPage();">+</button>
+        </div>
+        <div class="line-total">₹${item.price * item.quantity}</div>
+        <button class="remove-btn" aria-label="Remove item" onclick="removeFromCart(${item.id}); renderCartPage();">✕</button>
+      </div>
+    `;
+  }
+
+  function renderCartPage() {
+    const items = getCartItemsArray();
+    const empty = document.getElementById("cartPageEmpty");
+    const grid = document.getElementById("cartPageGrid");
+
+    if (items.length === 0) {
+      empty.hidden = false;
+      grid.hidden = true;
+      return;
+    }
+    empty.hidden = true;
+    grid.hidden = false;
+
+    document.getElementById("cartPageList").innerHTML = items.map(cartLineItemHTML).join("");
+
+    const { subtotal, deliveryFee, tax, grandTotal } = getCartTotals();
+    document.getElementById("summaryRows").innerHTML = `
+      <div class="summary-row"><span>Subtotal</span><span>₹${subtotal}</span></div>
+      <div class="summary-row"><span>Delivery Fee</span><span>₹${deliveryFee}</span></div>
+      <div class="summary-row"><span>Taxes (5%)</span><span>₹${tax}</span></div>
+      <div class="summary-row total"><span>Grand Total</span><span>₹${grandTotal}</span></div>
+    `;
+  }
+
+  document.getElementById("checkoutBtn").addEventListener("click", () => {
+    const items = getCartItemsArray();
+    if (items.length === 0) return;
+
+    const order = {
+      id: "FF" + Date.now().toString().slice(-8),
+      items,
+      totals: getCartTotals(),
+      placedAt: new Date().toISOString()
+    };
+    enqueueOrder(order); // Queue: FIFO order history
+
+    document.getElementById("orderIdText").textContent = "#" + order.id;
+    clearCart();
+
+    document.getElementById("cartView").hidden = true;
+    document.getElementById("successView").hidden = false;
+  });
+
+  document.addEventListener("DOMContentLoaded", renderCartPage);
+</script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Menu | FeastFlow</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+<header class="navbar">
+  <div class="container">
+    <a href="index.html" class="logo">🍽️ Feast<span>Flow</span></a>
+    <button class="nav-toggle btn-icon" id="navToggle" aria-label="Toggle menu">☰</button>
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="restaurants.html">Restaurants</a>
+      <a href="cart.html">Orders</a>
+    </nav>
+    <div class="nav-search">
+      <span class="icon">🔎</span>
+      <input type="text" id="navSearchInput" placeholder="Search restaurants or cuisines...">
+    </div>
+    <div class="nav-actions">
+      <button class="btn-icon theme-toggle" aria-label="Toggle dark mode">🌙</button>
+      <button class="btn-icon cart-btn" id="cartOpenBtn" aria-label="Open cart">
+        🛒
+        <span class="cart-count">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="container section">
+  <a href="restaurants.html" class="back-link">← Back to Restaurants</a>
+
+  <div id="restaurantHeader"></div>
+
+  <div class="menu-category-nav" id="menuCategoryNav"></div>
+
+  <div class="food-grid" id="foodGrid"></div>
+</main>
+
+<footer>
+  <div class="container footer-grid">
+    <div class="footer-col">
+      <div class="footer-logo">🍽️ FeastFlow</div>
+      <p>Your favourite food, delivered fast, fresh and hot — right to your door.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="#">About Us</a>
+      <a href="#">Careers</a>
+      <a href="#">Blog</a>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <a href="#">Help Centre</a>
+      <a href="#">Partner with Us</a>
+      <a href="#">Ride with Us</a>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <a href="#">support@feastflow.example</a>
+      <a href="#">+91 98765 43210</a>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2026 FeastFlow. All rights reserved. Built as a frontend demo project.</div>
+</footer>
+
+<div class="cart-overlay" id="cartOverlay"></div>
+<aside class="cart-drawer" id="cartDrawer">
+  <div class="cart-drawer-header">
+    <h3>Your Cart</h3>
+    <button class="btn-icon" id="cartCloseBtn" aria-label="Close cart">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-drawer-footer" id="cartDrawerFooter"></div>
+</aside>
+
+<script src="js/data.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/app.js"></script>
+<script src="js/search.js"></script>
+<script>
+  const menuState = { category: "All" };
+
+  function getRestaurantIdFromUrl() {
+    return new URLSearchParams(window.location.search).get("id");
+  }
+
+  function renderMenuCategoryNav(items) {
+    const cats = ["All", ...new Set(items.map(i => i.category))];
+    const nav = document.getElementById("menuCategoryNav");
+    nav.innerHTML = cats.map(cat => `
+      <button class="${menuState.category === cat ? "active" : ""}" data-cat="${cat}">${cat}</button>
+    `).join("");
+    nav.querySelectorAll("button").forEach(btn => {
+      btn.addEventListener("click", () => {
+        menuState.category = btn.dataset.cat;
+        nav.querySelectorAll("button").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        renderFilteredFood(items);
+      });
+    });
+  }
+
+  function renderFilteredFood(items) {
+    const filtered = menuState.category === "All" ? items : items.filter(i => i.category === menuState.category);
+    renderFoodGrid("foodGrid", filtered);
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const id = getRestaurantIdFromUrl();
+    const restaurant = findRestaurantById(id);
+
+    if (!restaurant) {
+      document.getElementById("restaurantHeader").innerHTML = `
+        <div class="empty-state">
+          <div class="emoji">🔍</div>
+          <h3>Restaurant not found</h3>
+          <p>It may have been removed. <a href="restaurants.html" style="color:var(--color-primary);font-weight:600;">Browse all restaurants</a></p>
+        </div>`;
+      return;
+    }
+
+    pushRecentlyViewed(restaurant.id);
+    document.title = `${restaurant.name} | FeastFlow`;
+
+    document.getElementById("restaurantHeader").innerHTML = `
+      <div class="restaurant-header">
+        <div class="emoji">${restaurant.emoji}</div>
+        <div>
+          <h1>${restaurant.name}</h1>
+          <p style="opacity:.9; margin-bottom:8px;">${restaurant.tagline}</p>
+          <div class="meta">
+            <span>⭐ ${restaurant.rating}</span>
+            <span>⏱ ${restaurant.deliveryTime}</span>
+            <span>🍽 ${restaurant.category}</span>
+            <span>${restaurant.price}</span>
+          </div>
+        </div>
+      </div>
+    `;
+
+    const items = getFoodByRestaurant(restaurant.id);
+    renderMenuCategoryNav(items);
+    renderFilteredFood(items);
+  });
+</script>
+</body>
+</html>

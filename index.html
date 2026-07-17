@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FeastFlow | Food delivered fast, fresh & hot</title>
+<meta name="description" content="Order food from your favourite restaurants and get it delivered fast with FeastFlow.">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+<!-- ===================== NAVBAR ===================== -->
+<header class="navbar">
+  <div class="container">
+    <a href="index.html" class="logo">🍽️ Feast<span>Flow</span></a>
+    <button class="nav-toggle btn-icon" id="navToggle" aria-label="Toggle menu">☰</button>
+    <nav class="nav-links">
+      <a href="index.html" class="active">Home</a>
+      <a href="restaurants.html">Restaurants</a>
+      <a href="cart.html">Orders</a>
+    </nav>
+    <div class="nav-search">
+      <span class="icon">🔎</span>
+      <input type="text" id="navSearchInput" placeholder="Search restaurants or cuisines...">
+    </div>
+    <div class="nav-actions">
+      <button class="btn-icon theme-toggle" aria-label="Toggle dark mode">🌙</button>
+      <button class="btn-icon cart-btn" id="cartOpenBtn" aria-label="Open cart">
+        🛒
+        <span class="cart-count">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ===================== HERO ===================== -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-copy">
+      <span class="hero-eyebrow">🔥 Over 500+ dishes near you</span>
+      <h1>Craving something <span class="highlight">delicious</span>? We've got you.</h1>
+      <p>Order from the best local restaurants and get it delivered to your doorstep — fast, fresh, and hassle-free.</p>
+
+      <form class="hero-search" id="heroSearchForm" style="position:relative;">
+        <input type="text" id="heroSearchInput" placeholder="Search for restaurants, cuisines, or dishes...">
+        <button type="submit" class="btn btn-primary">Search</button>
+        <div id="searchSuggestions" style="display:none; position:absolute; top:110%; left:0; right:0; background:var(--color-card); border-radius:var(--radius-md); box-shadow:var(--shadow-md); overflow:hidden; z-index:10;"></div>
+      </form>
+
+      <div class="hero-stats">
+        <div><strong>12+</strong><span>Restaurants</span></div>
+        <div><strong>60+</strong><span>Dishes</span></div>
+        <div><strong>4.6★</strong><span>Avg. Rating</span></div>
+        <div><strong>25 min</strong><span>Avg. Delivery</span></div>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="hero-plate">🍕</div>
+      <div class="hero-chip chip-1">⭐ 4.8 Rated</div>
+      <div class="hero-chip chip-2">⏱ 20 min delivery</div>
+    </div>
+  </div>
+</section>
+
+<main class="container">
+
+  <!-- ===================== CATEGORIES ===================== -->
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <h2>What are you craving?</h2>
+        <p>Browse by category and find your next favourite meal.</p>
+      </div>
+    </div>
+    <div class="categories-grid" id="categoriesGrid"></div>
+  </section>
+
+  <!-- ===================== PROMO BANNER ===================== -->
+  <section class="section" style="padding-top:0;">
+    <div class="promo-banner">
+      <div>
+        <h3>Flat 50% OFF on your first order</h3>
+        <p>Use code <strong>FEAST50</strong> at checkout. Valid on orders above ₹199.</p>
+      </div>
+      <a href="restaurants.html" class="btn btn-accent">Order Now</a>
+    </div>
+  </section>
+
+  <!-- ===================== FEATURED RESTAURANTS ===================== -->
+  <section class="section" style="padding-top:0;">
+    <div class="section-head">
+      <div>
+        <h2>Featured Restaurants</h2>
+        <p>Top-rated picks handpicked for you.</p>
+      </div>
+      <a href="restaurants.html" class="link-more">View all →</a>
+    </div>
+    <div class="restaurants-grid" id="featuredGrid"></div>
+  </section>
+
+  <!-- ===================== RECENTLY VIEWED ===================== -->
+  <section class="section" style="padding-top:0;" id="recentSection" hidden>
+    <div class="section-head">
+      <div>
+        <h2>Recently Viewed</h2>
+        <p>Pick up where you left off.</p>
+      </div>
+    </div>
+    <div class="recent-scroll" id="recentGrid"></div>
+  </section>
+
+</main>
+
+<!-- ===================== FOOTER ===================== -->
+<footer>
+  <div class="container footer-grid">
+    <div class="footer-col">
+      <div class="footer-logo">🍽️ FeastFlow</div>
+      <p>Your favourite food, delivered fast, fresh and hot — right to your door.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="#">About Us</a>
+      <a href="#">Careers</a>
+      <a href="#">Blog</a>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <a href="#">Help Centre</a>
+      <a href="#">Partner with Us</a>
+      <a href="#">Ride with Us</a>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <a href="#">support@feastflow.example</a>
+      <a href="#">+91 98765 43210</a>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2026 FeastFlow. All rights reserved. Built as a frontend demo project.</div>
+</footer>
+
+<!-- ===================== CART DRAWER ===================== -->
+<div class="cart-overlay" id="cartOverlay"></div>
+<aside class="cart-drawer" id="cartDrawer">
+  <div class="cart-drawer-header">
+    <h3>Your Cart</h3>
+    <button class="btn-icon" id="cartCloseBtn" aria-label="Close cart">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-drawer-footer" id="cartDrawerFooter"></div>
+</aside>
+
+<script src="js/data.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/app.js"></script>
+<script src="js/search.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    renderCategories("categoriesGrid");
+
+    const featured = RESTAURANTS.slice().sort((a, b) => b.rating - a.rating).slice(0, 8);
+    renderRestaurantGrid("featuredGrid", featured);
+
+    const recentIds = getRecentlyViewed();
+    if (recentIds.length > 0) {
+      const recentRestaurants = recentIds.map(id => findRestaurantById(id)).filter(Boolean);
+      renderRestaurantGrid("recentGrid", recentRestaurants);
+      document.getElementById("recentSection").hidden = false;
+    }
+  });
+</script>
+</body>
+</html>

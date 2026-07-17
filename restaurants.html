@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Restaurants | FeastFlow</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+<header class="navbar">
+  <div class="container">
+    <a href="index.html" class="logo">🍽️ Feast<span>Flow</span></a>
+    <button class="nav-toggle btn-icon" id="navToggle" aria-label="Toggle menu">☰</button>
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="restaurants.html" class="active">Restaurants</a>
+      <a href="cart.html">Orders</a>
+    </nav>
+    <div class="nav-search">
+      <span class="icon">🔎</span>
+      <input type="text" id="navSearchInput" placeholder="Search restaurants or cuisines...">
+    </div>
+    <div class="nav-actions">
+      <button class="btn-icon theme-toggle" aria-label="Toggle dark mode">🌙</button>
+      <button class="btn-icon cart-btn" id="cartOpenBtn" aria-label="Open cart">
+        🛒
+        <span class="cart-count">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="container section">
+  <div class="section-head">
+    <div>
+      <h2>All Restaurants</h2>
+      <p>Search, filter and sort to find exactly what you're craving.</p>
+    </div>
+  </div>
+
+  <div class="filter-bar">
+    <div class="search-box">
+      <span class="icon">🔎</span>
+      <input type="text" id="restaurantSearchBox" placeholder="Search by restaurant or cuisine...">
+    </div>
+    <select id="sortSelect">
+      <option value="default">Sort: Recommended</option>
+      <option value="rating">Sort: Rating (High to Low)</option>
+      <option value="deliveryTime">Sort: Delivery Time (Fastest)</option>
+    </select>
+  </div>
+
+  <div class="chip-group" id="categoryChips" style="margin-bottom:20px;"></div>
+
+  <p class="results-count" id="resultsCount"></p>
+
+  <div class="restaurants-grid" id="restaurantsGrid"></div>
+</main>
+
+<footer>
+  <div class="container footer-grid">
+    <div class="footer-col">
+      <div class="footer-logo">🍽️ FeastFlow</div>
+      <p>Your favourite food, delivered fast, fresh and hot — right to your door.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="#">About Us</a>
+      <a href="#">Careers</a>
+      <a href="#">Blog</a>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <a href="#">Help Centre</a>
+      <a href="#">Partner with Us</a>
+      <a href="#">Ride with Us</a>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <a href="#">support@feastflow.example</a>
+      <a href="#">+91 98765 43210</a>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2026 FeastFlow. All rights reserved. Built as a frontend demo project.</div>
+</footer>
+
+<div class="cart-overlay" id="cartOverlay"></div>
+<aside class="cart-drawer" id="cartDrawer">
+  <div class="cart-drawer-header">
+    <h3>Your Cart</h3>
+    <button class="btn-icon" id="cartCloseBtn" aria-label="Close cart">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-drawer-footer" id="cartDrawerFooter"></div>
+</aside>
+
+<script src="js/data.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/app.js"></script>
+<script src="js/filter.js"></script>
+<script src="js/search.js"></script>
+<script>
+  // Keep the dedicated search box in the filter bar in sync with the search state.
+  document.addEventListener("DOMContentLoaded", () => {
+    const box = document.getElementById("restaurantSearchBox");
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("search")) box.value = params.get("search");
+    box.addEventListener("input", () => handleSearchInput(box.value));
+  });
+</script>
+</body>
+</html>
